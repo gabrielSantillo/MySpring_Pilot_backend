@@ -1,15 +1,13 @@
-import secrets
-from flask import Flask, request, make_response
-from dbhelpers import run_statement
-from apihelpers import check_endpoint_info, check_data_sent
+from flask import Flask
 from dbcreds import production_mode
-import json
-
+import endpoints.user
 
 # calling the Flask function which will return a value that I will be used for my API
 app = Flask(__name__)
 
-
+@app.post('/api/user')
+def post_user():
+    return endpoints.user.post()
 
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):

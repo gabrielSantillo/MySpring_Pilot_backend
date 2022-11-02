@@ -8,7 +8,7 @@ import mariadb
 
 def connect_db():
     try:
-        conn = mariadb.connect(password=dbcreds.pasword, user=dbcreds.user,
+        conn = mariadb.connect(password=dbcreds.password, user=dbcreds.user,
                                host=dbcreds.host, port=dbcreds.port, database=dbcreds.database)
         cursor = conn.cursor()
         return cursor
