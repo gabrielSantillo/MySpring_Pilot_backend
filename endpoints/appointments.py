@@ -30,3 +30,19 @@ def get():
         return make_response(json.dumps(results, default=str), 200)
     else:
         return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
+
+def patch():
+    #is_valid_header = check_endpoint_info(request.headers, ['token'])
+    #if(is_valid_header != None):
+    #   return make_response(json.dumps(is_valid_header, default=str), 400)
+
+    is_valid = check_endpoint_info(request.json, ['appointment_id'])
+    if(is_valid != None):
+        return make_response(json.dumps(is_valid, default=str), 400)
+    
+    appointment_info = run_statement('CALL get_appointment_by_user_token(?)', [request.json.get('appointment_id')])
+
+    update_appointment_info = check_data_sent(request.json, appointment_info[0], ['user_id', 'first_name', 'last_name', 'email', 'contract_signed', 'appointment_date'])
+
+    results = run_statement('CALL edit_appointment(?,?,?,?,?,?,?)', [update_appointment_info['user_id'], update_appointment_info['first_name'], update_appointment_info['last_name'], update_appointment_info['email'], update_appointment_info['contract_signed'], update_appointment_info['appointment_date']])
+
