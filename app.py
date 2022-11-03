@@ -29,6 +29,10 @@ def patch_client():
 def client_in_user():
     return endpoints.client_login.post()
 
+@app.delete('/api/client-login')
+def delete_client_token():
+    return endpoints.client_login.delete()
+
 ##############################################################################
 # APPOINTMENT #
 ##############################################################################
