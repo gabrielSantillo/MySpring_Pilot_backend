@@ -23,11 +23,11 @@ DROP TABLE IF EXISTS `application_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `application_status` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `student_id` int(10) unsigned NOT NULL,
   `applied` tinyint(1) NOT NULL,
   `date_applied` date NOT NULL,
-  `loa_process` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `loa_process` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `application_status_FK` (`student_id`),
@@ -53,17 +53,17 @@ DROP TABLE IF EXISTS `appointment`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `appointment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
+  `client_id` int(10) unsigned NOT NULL,
   `first_name` varchar(30) COLLATE utf8mb4_bin NOT NULL,
   `last_name` varchar(100) COLLATE utf8mb4_bin NOT NULL,
   `email` varchar(100) COLLATE utf8mb4_bin NOT NULL,
   `contract_signed` tinyint(1) NOT NULL DEFAULT 0,
-  `date` datetime NOT NULL,
+  `date` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
-  KEY `appointment_FK` (`user_id`),
-  CONSTRAINT `appointment_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+  KEY `appointment_FK` (`client_id`),
+  CONSTRAINT `appointment_FK` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,8 +72,65 @@ CREATE TABLE `appointment` (
 
 LOCK TABLES `appointment` WRITE;
 /*!40000 ALTER TABLE `appointment` DISABLE KEYS */;
-INSERT INTO `appointment` VALUES (1,4,'testing','testing','test@test.com',0,'2022-11-02 14:00:00','2022-11-03 13:56:57'),(2,4,'testing','testing','test@test.com',0,'2022-11-02 14:00:00','2022-11-03 14:06:00'),(3,4,'testing','testing','test@test.com',0,'2022-11-02 14:00:00','2022-11-03 15:20:37');
 /*!40000 ALTER TABLE `appointment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `client`
+--
+
+DROP TABLE IF EXISTS `client`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `client` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(30) COLLATE utf8mb4_bin NOT NULL,
+  `last_name` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `password` varchar(10000) COLLATE utf8mb4_bin NOT NULL,
+  `salt` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `client`
+--
+
+LOCK TABLES `client` WRITE;
+/*!40000 ALTER TABLE `client` DISABLE KEYS */;
+INSERT INTO `client` VALUES (2,'Gabriel','Fernandes','natalia@myspringintercambio.com','*984979E97C4943BAAF218D38FE61B572A2FDC427','606a641c34b0d1100e3515e7a48ee4695992a9060472fb9ce416dfb40b1fd972','2022-11-03 17:17:25');
+/*!40000 ALTER TABLE `client` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `client_session`
+--
+
+DROP TABLE IF EXISTS `client_session`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `client_session` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `client_id` int(10) unsigned NOT NULL,
+  `token` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `client_session_un` (`token`),
+  KEY `client_session_FK` (`client_id`),
+  CONSTRAINT `client_session_FK` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `client_session`
+--
+
+LOCK TABLES `client_session` WRITE;
+/*!40000 ALTER TABLE `client_session` DISABLE KEYS */;
+INSERT INTO `client_session` VALUES (2,2,'e0e83ce2b1ba4bbf975746d15b4a8725','2022-11-03 17:17:25');
+/*!40000 ALTER TABLE `client_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -111,16 +168,16 @@ CREATE TABLE `courses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `college_id` int(10) unsigned NOT NULL,
   `student_id` int(10) unsigned NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_bin NOT NULL,
-  `course_url` varchar(1000) COLLATE utf8mb4_bin NOT NULL,
+  `course_name` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `course_url` varchar(100) COLLATE utf8mb4_bin NOT NULL,
   `intake` date NOT NULL,
   `tuition` float NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
-  KEY `courses_FK` (`college_id`),
-  KEY `courses_FK_1` (`student_id`),
-  CONSTRAINT `courses_FK` FOREIGN KEY (`college_id`) REFERENCES `college` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `courses_FK_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `courses_FK` (`student_id`),
+  KEY `courses_FK_1` (`college_id`),
+  CONSTRAINT `courses_FK` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `courses_FK_1` FOREIGN KEY (`college_id`) REFERENCES `college` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -150,13 +207,15 @@ CREATE TABLE `student` (
   `graduation_historic` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
   `high_school_diploma` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
   `high_school_historic` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
-  `english` varchar(30) COLLATE utf8mb4_bin DEFAULT NULL,
-  `app_form` varchar(30) COLLATE utf8mb4_bin DEFAULT NULL,
-  `comission` tinyint(3) unsigned DEFAULT NULL,
+  `english` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
+  `app_form` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
+  `commission` tinyint(3) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `student_FK` (`appointment_id`),
-  CONSTRAINT `student_FK` FOREIGN KEY (`appointment_id`) REFERENCES `appointment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `student_FK_1` (`college_id`),
+  CONSTRAINT `student_FK` FOREIGN KEY (`appointment_id`) REFERENCES `appointment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `student_FK_1` FOREIGN KEY (`college_id`) REFERENCES `college` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -167,65 +226,6 @@ CREATE TABLE `student` (
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(30) COLLATE utf8mb4_bin NOT NULL,
-  `last_name` varchar(100) COLLATE utf8mb4_bin NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_bin NOT NULL,
-  `password` varchar(10000) COLLATE utf8mb4_bin NOT NULL,
-  `salt` varchar(100) COLLATE utf8mb4_bin NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_un` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (4,'Gabriel','Santillo','gabriel@myspringintercambio.com','*9D8DE9EA5924C1118502D3A4BD443B7D30EC02FF','d70724648c5fb77bf29f3d91910ddec171a1267e23aa438a3f9be5bb5cc3950a','2022-11-02 15:29:24'),(5,'Natalia','Fernandes','natalia@myspringintercambio.com','*543AC39221E60D494820973A7842C0F177F4007D','1470ae9bbebe1339d790b48d6782c359f466d16c98283496ba104cf65cd32f80','2022-11-03 13:06:31');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_session`
---
-
-DROP TABLE IF EXISTS `user_session`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_session` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `token` varchar(1000) COLLATE utf8mb4_bin NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_session_un` (`token`) USING HASH,
-  KEY `user_session_FK` (`user_id`),
-  CONSTRAINT `user_session_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_session`
---
-
-LOCK TABLES `user_session` WRITE;
-/*!40000 ALTER TABLE `user_session` DISABLE KEYS */;
-INSERT INTO `user_session` VALUES (1,4,'2add3491a74843d998683e62a7997111','2022-11-02 15:29:24'),(2,5,'9e10becb12304467ad023d958482861e','2022-11-03 13:06:31');
-/*!40000 ALTER TABLE `user_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -240,8 +240,8 @@ CREATE TABLE `visa` (
   `student_id` int(10) unsigned NOT NULL,
   `applied` tinyint(1) NOT NULL,
   `applied_at` date NOT NULL,
-  `approved` tinyint(1) NOT NULL,
-  `visa_company` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `approved` tinyint(1) NOT NULL DEFAULT 0,
+  `analyst` varchar(100) COLLATE utf8mb4_bin DEFAULT 'Unknown',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `visa_FK` (`student_id`),
@@ -279,10 +279,10 @@ date_input datetime,
 token_input varchar(1000))
     MODIFIES SQL DATA
 begin
-	insert into appointment(user_id, first_name, last_name, email, `date`)
-	select us.user_id, first_name_input, last_name_input, email_input, date_input
-	from user_session us
-	where us.token = token_input;
+	insert into appointment(client_id, first_name, last_name, email, `date`)
+	select cs.user_id, first_name_input, last_name_input, email_input, date_input
+	from client_session cs
+	where cs.token = token_input;
 
 	select last_insert_id() as appointment_id; 
 	commit;
@@ -294,7 +294,7 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `add_user` */;
+/*!50003 DROP PROCEDURE IF EXISTS `add_client` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -302,7 +302,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_user`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_client`(
 first_name_input varchar(30),
 last_name_input varchar(100),
 email_input varchar(100),
@@ -311,15 +311,15 @@ salt_input varchar(100),
 token_input varchar(100))
     MODIFIES SQL DATA
 begin
-	insert into `user`(first_name, last_name, email, password, salt)
+	insert into client(first_name, last_name, email, password, salt)
 	values (first_name_input, last_name_input, email_input, PASSWORD(CONCAT(password_input, salt_input)), salt_input);
-	
-	insert into user_session(user_id, token)
+
+	insert into client_session(client_id, token)
 	values(last_insert_id(), token_input);
 
-	select us.user_id, convert(us.token using utf8) as token
-	from user_session us
-	where us.id = last_insert_id();
+	select cs.client_id, convert(cs.token using utf8) as token
+	from client_session cs 
+	where cs.id = last_insert_id();
 	commit;
 END ;;
 DELIMITER ;
@@ -338,7 +338,7 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `edit_appointment`(
-user_id_input int unsigned,
+client_id_input int unsigned,
 first_name_input varchar(30),
 last_name_input varchar(100),
 email_input varchar(100),
@@ -348,8 +348,7 @@ appointment_id_input int unsigned)
     MODIFIES SQL DATA
 begin
 	update appointment a
-	inner join user_session us on us.user_id = a.user_id
-	set a.user_id = user_id_input, a.first_name = first_name_input, a.last_name = last_name_input,
+	set a.client_id = client_id_input, a.first_name = first_name_input, a.last_name = last_name_input,
 	a.email = email_input, a.contract_signed = contract_signed_input, a.`date` = date_input
 	where a.id = appointment_id_input;
 
@@ -363,7 +362,7 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `edit_user` */;
+/*!50003 DROP PROCEDURE IF EXISTS `edit_client` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -371,19 +370,18 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `edit_user`(
-first_name_input varchar(30),
+CREATE DEFINER=`root`@`localhost` PROCEDURE `edit_client`(first_name_input varchar(30),
 last_name_input varchar(100),
 email_input varchar(100),
 password_input varchar(100),
 token_input varchar(100))
     MODIFIES SQL DATA
 begin
-	update `user` u
-	inner join user_session us on us.user_id = u.id 
-	set u.first_name = first_name_input, u.last_name = last_name_input, u.email = email_input,
-	u.password = password_input
-	where us.token = token_input;
+	update client c
+	inner join client_session cs on cs.client_id = c.id 
+	set c.first_name = first_name_input, c.last_name = last_name_input, c.email = email_input,
+	c.password = password_input
+	where cs.token = token_input;
 	select row_count() as row_updated;
 	commit;
 END ;;
@@ -404,11 +402,11 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_all_appointments`()
 begin
-	select a.id as appointment_id, convert(u.email using utf8) as consultant, convert(a.first_name using utf8) as client_first_name,
+	select a.id as appointment_id, convert(c.email using utf8) as consultant, convert(a.first_name using utf8) as client_first_name,
 	convert(a.last_name using utf8) as client_last_name, convert(a.email using utf8) as client_email,
 	a.contract_signed as contract_signed, a.`date` as consult_date 
 	from appointment a
-	inner join `user` u on u.id = a.user_id;
+	inner join client c on c.id = a.client_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -417,7 +415,7 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `get_appointment_by_user_token` */;
+/*!50003 DROP PROCEDURE IF EXISTS `get_appointment_by_id` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -425,36 +423,14 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_appointment_by_user_token`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_appointment_by_id`(
 appointment_id_input int unsigned)
 begin
-		select a.user_id as user_id, convert(a.first_name using utf8) as first_name, convert(a.last_name using utf8) as last_name,
-		convert(a.email using utf8) as email, convert(a.contract_signed using utf8) as contract_signed,
-		a.`date` as appointment_date 
-		from appointment a
-		inner join user_session us on us.user_id = a.user_id
-		where a.id = appointment_id_input;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `get_user` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user`()
-begin
-	select convert(u.first_name using utf8) as first_name, convert(u.last_name using utf8) as last_name,
-	convert(u.email using utf8) as email
- 	from `user` u;
+	select a.client_id as client_id, convert(a.first_name using utf8) as first_name, convert(a.last_name using utf8) as last_name,
+	convert(a.email using utf8) as email, convert(a.contract_signed using utf8) as contract_signed,
+	a.`date` as appointment_date 
+	from appointment a
+	where a.id = appointment_id_input;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -463,7 +439,7 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `get_user_by_token` */;
+/*!50003 DROP PROCEDURE IF EXISTS `get_client` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -471,13 +447,11 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_by_token`(token_input varchar(100))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_client`()
 begin
-	select convert(u.first_name using utf8) as first_name, convert(u.last_name using utf8) as last_name, 
-	convert(u.email using utf8) as email, convert(u.password using utf8) as password
-	from `user` u
-	inner join user_session us on us.user_id = u.id
-	where us.token = token_input;
+	select convert(c.first_name using utf8) as first_name, convert(c.last_name using utf8) as last_name,
+	convert(c.email using utf8) as email
+ 	from client c;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -486,7 +460,7 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `log_in_user` */;
+/*!50003 DROP PROCEDURE IF EXISTS `get_client_by_token` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -494,21 +468,44 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `log_in_user`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_client_by_token`(token_input varchar(100))
+begin
+	select convert(c.first_name using utf8) as first_name, convert(c.last_name using utf8) as last_name, 
+	convert(c.email using utf8) as email, convert(c.password using utf8) as password
+	from client c
+	inner join client_session cs on cs.client_id = c.id
+	where cs.token = token_input;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `log_in_client` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `log_in_client`(
 email_input varchar(100),
 password_input varchar(10000),
 token_input varchar(1000))
     MODIFIES SQL DATA
 begin
-	insert into user_session(user_id, token)
-	select u.id, token_input
-	from `user` u
-	where u.email = email_input and
-	u.password = PASSWORD(concat(password_input, (select salt from `user` where email = email_input)));
+	insert into client_session(client_id, token)
+	select c.id, token_input
+	from client c
+	where c.email = email_input and
+	c.password = PASSWORD(concat(password_input, (select salt from client where email = email_input)));
 
-	select us.user_id, convert(us.token using utf8) as token
-	from user_session us
-	where us.token = token_input;
+	select cs.client_id, convert(cs.token using utf8) as token
+	from client_session cs
+	where cs.token = token_input;
 	commit;
 END ;;
 DELIMITER ;
@@ -526,4 +523,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-03 15:49:21
+-- Dump completed on 2022-11-03 17:31:10
