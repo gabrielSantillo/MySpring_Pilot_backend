@@ -22,3 +22,11 @@ def post():
         return make_response(json.dumps("Wrong token", default=str), 400)
     else:
         return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
+
+def get():
+    results = run_statement('CALL get_all_appointments()')
+
+    if(type(results) == list):
+        return make_response(json.dumps(results, default=str), 200)
+    else:
+        return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)

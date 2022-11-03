@@ -37,6 +37,10 @@ def log_in_user():
 def post_appointment():
     return endpoints.appointments.post()
 
+@app.get('/api/appointment')
+def get_all_appointments():
+    return endpoints.appointments.get()
+
 
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
