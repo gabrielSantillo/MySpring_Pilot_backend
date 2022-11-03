@@ -13,13 +13,13 @@ app = Flask(__name__)
 def post_cleint():
     return endpoints.client.post()
 
-@app.get('/api/user')
-def get_user():
-    return endpoints.user.get()
+@app.get('/api/client')
+def get_client():
+    return endpoints.client.get()
 
-@app.patch('/api/user')
-def patch_user():
-    return endpoints.user.patch()
+@app.patch('/api/client')
+def patch_client():
+    return endpoints.client.patch()
 
 ##############################################################################
 # USER-LOGIN #
