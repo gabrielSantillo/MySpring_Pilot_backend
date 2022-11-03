@@ -9,6 +9,14 @@ app = Flask(__name__)
 def post_user():
     return endpoints.user.post()
 
+@app.get('/api/user')
+def get_user():
+    return endpoints.user.get()
+
+@app.patch('/api/user')
+def patch_user():
+    return endpoints.user.patch()
+
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
     print("Running in Production Mode")
