@@ -1,6 +1,6 @@
 from flask import Flask
 from dbcreds import production_mode
-import endpoints.client, endpoints.user_login, endpoints.appointments
+import endpoints.client, endpoints.client_login, endpoints.appointments
 
 # calling the Flask function which will return a value that I will be used for my API
 app = Flask(__name__)
@@ -25,9 +25,9 @@ def patch_client():
 # USER-LOGIN #
 ##############################################################################
 
-@app.post('/api/user-login')
-def log_in_user():
-    return endpoints.user_login.post()
+@app.post('/api/client-login')
+def client_in_user():
+    return endpoints.client_login.post()
 
 ##############################################################################
 # APPOINTMENT #

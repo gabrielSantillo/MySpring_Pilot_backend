@@ -10,7 +10,7 @@ def post():
         return make_response(json.dumps(is_valid, default=str), 400)
 
     token = secrets.token_hex(nbytes=None)
-    results = run_statement('CALL log_in_user(?,?,?)', [request.json.get('email'), request.json.get('password'), token])
+    results = run_statement('CALL log_in_client(?,?,?)', [request.json.get('email'), request.json.get('password'), token])
 
     if(type(results) == list and len(results) != 0):
         return make_response(json.dumps(results[0], default=str), 200)
