@@ -57,6 +57,10 @@ def edit_appointment():
 def post_college():
     return endpoints.college.post()
 
+@app.get('/api/college')
+def get_all_colleges():
+    return endpoints.college.get()
+
 
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):

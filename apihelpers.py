@@ -1,3 +1,7 @@
+from flask import request, make_response
+from dbhelpers import run_statement
+import json
+
 # function responsible to the sent_data that will is going to be request.args or request.json and the
 # expected_data taht is going to be the list of keys the endpoint requires
 # this function will return a string in case of error and None otherwise
@@ -80,15 +84,10 @@ def organize_rated_orders(response):
             orders.append(item)
     return orders
 
-# this function is responsible for checking if the menu ids sent when ordering belongs to the restaurant id that was sent
-def match_ids(ids_sent, original_ids):
-    ids = []
-    for id in ids_sent:
-        for item_id in original_ids:
-            if(id == item_id['id']):
-                    ids.append(id)
-        
-    if(len(ids) == len(ids_sent)):
+def is_valid_token(token):
+    valid_token = run_statement('CALL token_check(?)', [token])
+
+    if(type(valid_token) == list and valid_token[0]['client_id'] != 0):
         return True
     else:
         return False
