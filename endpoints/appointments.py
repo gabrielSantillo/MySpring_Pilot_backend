@@ -45,7 +45,7 @@ def patch():
 
     valid_token = run_statement('CALL token_check(?)', [request.headers.get('token')])
 
-    if(type(valid_token) == list and len(valid_token) == 1):
+    if(type(valid_token) == list and valid_token[0]['client_id'] != 0):
         is_valid = check_endpoint_info(request.json, ['appointment_id'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid, default=str), 400)
