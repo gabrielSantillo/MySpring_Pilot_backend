@@ -1,7 +1,5 @@
-from uuid import uuid4
 from flask import request, make_response
 from apihelpers import check_endpoint_info, check_data_sent
-import secrets
 import json
 from dbhelpers import run_statement
 
