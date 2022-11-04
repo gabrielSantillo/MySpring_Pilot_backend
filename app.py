@@ -61,6 +61,10 @@ def post_college():
 def get_all_colleges():
     return endpoints.college.get()
 
+@app.patch('/api/college')
+def patch_college():
+    return endpoints.college.patch()
+
 
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
