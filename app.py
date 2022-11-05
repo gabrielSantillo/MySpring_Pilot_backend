@@ -93,6 +93,11 @@ def post_application():
 def get_all_application_status():
     return endpoints.application_status.get()
 
+@app.patch('/api/application-status')
+def patch_application_status():
+    return endpoints.application_status.patch()
+ 
+
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
     print("Running in Production Mode")

@@ -87,7 +87,7 @@ def organize_rated_orders(response):
 def is_valid_token(token):
     valid_token = run_statement('CALL token_check(?)', [token])
 
-    if(type(valid_token) == list and valid_token[0]['client_id'] != 0):
-        return True
-    else:
+    if(type(valid_token) == list and len(valid_token) == 0):
         return False
+    else:
+        return True
