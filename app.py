@@ -1,6 +1,6 @@
 from flask import Flask
 from dbcreds import production_mode
-import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status
+import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status, endpoints.courses
 
 # calling the Flask function which will return a value that I will be used for my API
 app = Flask(__name__)
@@ -96,7 +96,15 @@ def get_all_application_status():
 @app.patch('/api/application-status')
 def patch_application_status():
     return endpoints.application_status.patch()
+
+##############################################################################
+# COURSES #
+##############################################################################
  
+@app.post('/api/courses')
+def post_course():
+    return endpoints.courses.post()
+
 
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
