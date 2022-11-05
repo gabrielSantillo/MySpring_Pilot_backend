@@ -109,6 +109,10 @@ def post_course():
 def get_all_courses():
     return endpoints.courses.get()
 
+@app.patch('/api/courses')
+def patch_course():
+    return endpoints.courses.patch()
+
 
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):

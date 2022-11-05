@@ -51,38 +51,6 @@ def organize_response(response):
             orders.append(item)
     return orders
 
-# this function is resposible to organize rated orders having a list that contains dictionaries with all orders made by the client
-def organize_rated_orders(response):
-    orders = []
-    ids = []
-
-    for data in response:
-        if (data['order_id'] in ids):
-            menu_item = {
-                'name': data['name'],
-                'price': data['price'],
-                'menu_item_id': data['menu_item_id'],
-                'description': data['description'],
-                'image_url': data['image_url']
-            }
-            item['menu_items'].append(menu_item)
-        else:
-            ids.append(data['order_id'])
-
-            item = {
-                'order_id': data['order_id'],
-                'restaurant_id': data['restaurant_id'],
-                'rate': data['rate'],
-                'menu_items': [{
-                    'name': data['name'],
-                    'price': data['price'],
-                    'menu_item_id': data['menu_item_id'],
-                    'description': data['description'],
-                    'image_url': data['image_url']
-                }]
-            }
-            orders.append(item)
-    return orders
 
 def is_valid_token(token):
     valid_token = run_statement('CALL token_check(?)', [token])
