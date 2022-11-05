@@ -125,6 +125,10 @@ def post_visa():
 def get_visa():
     return endpoints.visa.get()
 
+@app.patch('/api/visa')
+def patch_visa():
+    return endpoints.visa.patch()
+
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
     print("Running in Production Mode")
