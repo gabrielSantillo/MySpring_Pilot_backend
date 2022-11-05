@@ -1,7 +1,8 @@
 from flask import request, make_response, send_from_directory
-from apihelpers import check_endpoint_info, is_valid_token, check_data_sent, save_file
+from apihelpers import check_endpoint_info, is_valid_token, save_file
 import json
 from dbhelpers import run_statement
+import os
 
 def post():
     is_valid_header = check_endpoint_info(request.headers, ['token'])
@@ -59,5 +60,38 @@ def get():
         # Use the built in flask function send_from_directory
         # First into the images folder, and then use my results from my DB interaction to get the name of the file
         return send_from_directory('images', results[0]['file_name'])
+    else:
+        return make_response(json.dumps("Wrong token", default=str), 400)
+
+def delete():
+    is_valid_header = check_endpoint_info(request.headers, ['token'])
+    if(is_valid_header != None):
+       return make_response(json.dumps(is_valid_header, default=str), 400)
+
+    valid_token = is_valid_token(request.headers.get('token'))
+
+    if(valid_token):
+        is_valid = check_endpoint_info(request.json, ['image_id'])
+        if(is_valid != None):
+            return make_response(json.dumps(is_valid, default=str), 400)
+
+        # Get the image information from the DB
+        results = run_statement('CALL get_image(?)', [request.json.get('image_id')])
+        # Make sure something came back from the DB that wasn't an error
+
+        if(type(results) != list):
+            return make_response(json.dumps(results), 500)
+        elif(len(results) == 0):
+            return make_response(json.dumps("Invalid image id"), 400)
+
+        image_path = os.path.join('images', results[0]['file_name'])
+        os.remove(image_path)
+
+        image_deleted = run_statement('CALL delete_image(?)', [request.json.get('image_id')])
+
+        if(type(image_deleted) == list and image_deleted[0]['row_updated'] == 1):
+            return make_response(json.dumps(image_deleted[0], default=str), 200)
+        else:
+            return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
     else:
         return make_response(json.dumps("Wrong token", default=str), 400)

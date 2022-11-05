@@ -141,6 +141,10 @@ def post_image():
 def get_image():
     return endpoints.image.get()
 
+@app.delete('/api/image')
+def delete_image():
+    return endpoints.image.delete()
+
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
     print("Running in Production Mode")
