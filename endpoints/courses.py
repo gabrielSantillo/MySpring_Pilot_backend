@@ -11,11 +11,11 @@ def post():
     valid_token = is_valid_token(request.headers.get('token'))
 
     if(valid_token):
-        is_valid = check_endpoint_info(request.json, ['college_id', 'student_id', 'course_name', 'course_url', 'intake', 'tuition'])
+        is_valid = check_endpoint_info(request.json, ['college_id', 'course_name', 'course_url', 'intake', 'tuition'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid, default=str), 400)
         
-        results = run_statement('CALL add_courses(?,?,?,?,?,?)', [request.json.get('college_id'), request.json.get('student_id'), request.json.get('course_name'), request.json.get('course_url'), request.json.get('intake'), request.json.get('tuition')])
+        results = run_statement('CALL add_courses(?,?,?,?,?)', [request.json.get('college_id'), request.json.get('course_name'), request.json.get('course_url'), request.json.get('intake'), request.json.get('tuition')])
 
         if(type(results) == list and results[0]['course_id'] != 0):
             return make_response(json.dumps(results[0], default=str), 200)
