@@ -89,6 +89,10 @@ def patch_student():
 def post_application():
     return endpoints.application_status.post()
 
+@app.get('/api/application-status')
+def get_all_application_status():
+    return endpoints.application_status.get()
+
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
     print("Running in Production Mode")
