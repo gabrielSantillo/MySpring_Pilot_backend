@@ -137,6 +137,10 @@ def patch_visa():
 def post_image():
     return endpoints.image.post()
 
+@app.get('/api/image')
+def get_image():
+    return endpoints.image.get()
+
 # if statement to check if the production_mode variable is true, if yes, run in production mode, if not, run in testing mode
 if (production_mode):
     print("Running in Production Mode")

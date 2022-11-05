@@ -1,4 +1,4 @@
-from flask import request, make_response
+from flask import request, make_response, send_from_directory
 from apihelpers import check_endpoint_info, is_valid_token, check_data_sent, save_file
 import json
 from dbhelpers import run_statement
@@ -6,11 +6,11 @@ from dbhelpers import run_statement
 def post():
     is_valid_header = check_endpoint_info(request.headers, ['token'])
     if(is_valid_header != None):
-        return make_response(json.dumps(is_valid_header, default=str), 400)
+       return make_response(json.dumps(is_valid_header, default=str), 400)
 
     valid_token = is_valid_token(request.headers.get('token'))
 
-    if(valid_token):
+    if(valid_token): 
         is_valid = check_endpoint_info(request.form, ['student_id'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid, default=str), 400)
@@ -33,5 +33,31 @@ def post():
             return make_response(json.dumps(results[0], default=str), 400)
         else:
             return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
+    else:
+        return make_response(json.dumps("Wrong token", default=str), 400)
+
+def get():
+    is_valid_header = check_endpoint_info(request.headers, ['token'])
+    if(is_valid_header != None):
+       return make_response(json.dumps(is_valid_header, default=str), 400)
+
+    valid_token = is_valid_token(request.headers.get('token'))
+
+    if(valid_token):
+        is_valid = check_endpoint_info(request.args, ['image_id'])
+        if(is_valid != None):
+            return make_response(json.dumps(is_valid, default=str), 400)
+
+        # Get the image information from the DB
+        results = run_statement('CALL get_image(?)', [request.args.get('image_id')])
+        # Make sure something came back from the DB that wasn't an error
+        if(type(results) != list):
+            return make_response(json.dumps(results), 500)
+        elif(len(results) == 0):
+            return make_response(json.dumps("Invalid image id"), 400)
+
+        # Use the built in flask function send_from_directory
+        # First into the images folder, and then use my results from my DB interaction to get the name of the file
+        return send_from_directory('images', results[0]['file_name'])
     else:
         return make_response(json.dumps("Wrong token", default=str), 400)
