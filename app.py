@@ -1,9 +1,13 @@
 from flask import Flask
 from dbcreds import production_mode
-import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status, endpoints.courses, endpoints.visa, endpoints.image
+import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status, endpoints.courses, endpoints.visa, endpoints.image, endpoints.token_validation
 
 # calling the Flask function which will return a value that I will be used for my API
 app = Flask(__name__)
+
+@app.get('/api/token')
+def get_token():
+    return endpoints.token_validation.get()
 
 ##############################################################################
 # USER #
