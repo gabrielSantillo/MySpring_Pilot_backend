@@ -81,3 +81,12 @@ def is_valid_token(token):
         return False
     else:
         return True
+
+def token_validation(token):
+    last_seen = run_statement('CALL token_time_validation(?)', [token])
+
+    if(type(last_seen) == list and len(last_seen) != 0):
+        if(last_seen[0]['difference_in_second'] <= 7200):
+            return True
+        else:
+            return False
