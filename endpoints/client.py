@@ -36,9 +36,7 @@ def patch():
         return make_response(json.dumps(is_valid_header, default=str), 400)
 
     valid_token = token_validation(request.headers.get('token'))
-    if(valid_token == None):
-        return make_response(json.dumps("WRONG TOKEN", default=str), 400)
-    elif(valid_token):
+    if(valid_token == "valid"):
         user_info = run_statement('CALL get_client_by_token(?)', [request.headers.get('token')])
         if(type(user_info) != list or len(user_info) != 1):
             return make_response(json.dumps(user_info, default=str), 400)
@@ -53,5 +51,9 @@ def patch():
             return make_response(json.dumps(results[0], default=str), 400)
         else:
             return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
-    else:
+    elif(valid_token == "invalid"):
         return make_response(json.dumps("TOKEN EXPIRED", default=str), 200)
+    elif(len(valid_token) == 0):
+        return make_response(json.dumps("WRONG TOKEN", default=str), 400)
+    else:
+        return make_response(json.dumps(valid_token, default=str), 500)

@@ -87,10 +87,16 @@ def token_validation(token):
 
     if(type(last_seen) == list and len(last_seen) != 0):
         if(last_seen[0]['difference_in_second'] <= 7200):
-            run_statement('CALL update_token(?)', [token])
-            return True
+            result = run_statement('CALL update_token(?)', [token])
+            if(type(result) == str):
+                return result
+            return "valid"
         else:
-            run_statement('CALL delete_token(?)', [token])
-            return False
+            result = run_statement('CALL delete_token(?)', [token])
+            if(type(result) == str):
+                return result
+            return "invalid"
+    else:
+        return last_seen
 
 
