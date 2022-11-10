@@ -52,7 +52,7 @@ def patch():
         else:
             return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
     elif(valid_token == "invalid"):
-        return make_response(json.dumps("TOKEN EXPIRED", default=str), 200)
+        return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
     elif(len(valid_token) == 0):
         return make_response(json.dumps("WRONG TOKEN", default=str), 400)
     else:
