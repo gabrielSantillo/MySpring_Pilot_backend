@@ -8,9 +8,8 @@ def post():
     if(is_valid_header != None):
         return make_response(json.dumps(is_valid_header, default=str), 400)
 
-    is_token_valid = token_validation(request.headers.get('token'))
-    
-    if(is_token_valid):
+    valid_token = token_validation(request.headers.get('token'))
+    if(valid_token == "valid"): 
         is_valid = check_endpoint_info(request.json, ['first_name', 'last_name', 'email', 'date'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid,default=str), 400)
@@ -23,9 +22,12 @@ def post():
             return make_response(json.dumps("Wrong token", default=str), 400)
         else:
             return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
-
+    elif(valid_token == "invalid"):
+        return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
+    elif(len(valid_token) == 0):
+        return make_response(json.dumps("WRONG TOKEN", default=str), 400)
     else:
-        return make_response(json.dumps("Token EXPIRED.", default=str), 200)
+        return make_response(json.dumps(valid_token, default=str), 500)
 
 def get():
     is_valid_header = check_endpoint_info(request.headers, ['token'])
