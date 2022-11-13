@@ -77,6 +77,10 @@ def post_student():
 def get_all_students():
     return endpoints.student.get()
 
+@app.get('/api/student-by-id')
+def get_student_by_id():
+    return endpoints.student.get_by_id()
+
 @app.patch('/api/student')
 def patch_student():
     return endpoints.student.patch()

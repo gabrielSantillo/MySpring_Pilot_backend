@@ -51,6 +51,32 @@ def get():
     else:
         return make_response(json.dumps(valid_token, default=str), 500)
 
+def get_by_id():
+    is_valid_header = check_endpoint_info(request.headers, ['token'])
+    if(is_valid_header != None):
+        return make_response(json.dumps(is_valid_header, default=str), 400)
+    
+    is_valid = check_endpoint_info(request.args, ['student_id'])
+    if(is_valid != None):
+        return make_response(json.dumps(is_valid_header, default=str), 400)
+        
+    valid_token = token_validation(request.headers.get('token'))
+    if(valid_token == "valid"):
+        results = run_statement('CALL get_student_by_id(?,?)', [request.args.get('student_id'), request.headers.get('token')])
+
+        if(type(results) == list and len(results) != 0):
+            return make_response(json.dumps(results[0], default=str), 200)
+        elif(type(results) == list and len(results) == 0):
+            return make_response(json.dumps("Wrong token", default=str), 400)
+        else:
+            return make_response(json.dumps("Sorry, an error has occurred.", default=str), 500)
+    elif(valid_token == "invalid"):
+        return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
+    elif(len(valid_token) == 0):
+        return make_response(json.dumps("WRONG TOKEN", default=str), 400)
+    else:
+        return make_response(json.dumps(valid_token, default=str), 500)
+
 def patch():
     is_valid_header = check_endpoint_info(request.headers, ['token'])
     if(is_valid_header != None):
