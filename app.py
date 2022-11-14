@@ -1,9 +1,11 @@
 from flask import Flask
 from dbcreds import production_mode
 import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status, endpoints.courses, endpoints.visa, endpoints.image
+from flask_cors import CORS
 
 # calling the Flask function which will return a value that I will be used for my API
 app = Flask(__name__)
+CORS(app)
 
 ##############################################################################
 # USER #
@@ -153,7 +155,7 @@ def delete_image():
 if (production_mode):
     print("Running in Production Mode")
     import bjoern  # type: ignore
-    bjoern.run(app, "0.0.0.0", 5000)
+    bjoern.run(app, "0.0.0.0", 5010)
 else:
     from flask_cors import CORS
     CORS(app)
