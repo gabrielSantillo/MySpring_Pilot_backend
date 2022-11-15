@@ -1,5 +1,5 @@
 from flask import request, make_response, send_from_directory
-from apihelpers import check_endpoint_info, is_valid_token, save_file
+from apihelpers import check_endpoint_info, token_validation, save_file
 import json
 from dbhelpers import run_statement
 import os
@@ -9,9 +9,8 @@ def post():
     if(is_valid_header != None):
        return make_response(json.dumps(is_valid_header, default=str), 400)
 
-    valid_token = is_valid_token(request.headers.get('token'))
-
-    if(valid_token): 
+    valid_token = token_validation(request.headers.get('token'))
+    if(valid_token == "valid"):
         is_valid = check_endpoint_info(request.form, ['student_id'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid, default=str), 400)
@@ -34,17 +33,20 @@ def post():
             return make_response(json.dumps(results[0], default=str), 400)
         else:
             return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
+    elif(valid_token == "invalid"):
+        return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
+    elif(len(valid_token) == 0):
+        return make_response(json.dumps("WRONG TOKEN", default=str), 400)
     else:
-        return make_response(json.dumps("Wrong token", default=str), 400)
+        return make_response(json.dumps(valid_token, default=str), 500)
 
 def get():
     is_valid_header = check_endpoint_info(request.headers, ['token'])
     if(is_valid_header != None):
        return make_response(json.dumps(is_valid_header, default=str), 400)
 
-    valid_token = is_valid_token(request.headers.get('token'))
-
-    if(valid_token):
+    valid_token = token_validation(request.headers.get('token'))
+    if(valid_token == "valid"):
         is_valid = check_endpoint_info(request.args, ['image_id'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid, default=str), 400)
@@ -60,17 +62,20 @@ def get():
         # Use the built in flask function send_from_directory
         # First into the images folder, and then use my results from my DB interaction to get the name of the file
         return send_from_directory('images', results[0]['file_name'])
+    elif(valid_token == "invalid"):
+        return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
+    elif(len(valid_token) == 0):
+        return make_response(json.dumps("WRONG TOKEN", default=str), 400)
     else:
-        return make_response(json.dumps("Wrong token", default=str), 400)
+        return make_response(json.dumps(valid_token, default=str), 500)
 
 def delete():
     is_valid_header = check_endpoint_info(request.headers, ['token'])
     if(is_valid_header != None):
        return make_response(json.dumps(is_valid_header, default=str), 400)
 
-    valid_token = is_valid_token(request.headers.get('token'))
-
-    if(valid_token):
+    valid_token = token_validation(request.headers.get('token'))
+    if(valid_token == "valid"):
         is_valid = check_endpoint_info(request.json, ['image_id'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid, default=str), 400)
@@ -93,7 +98,11 @@ def delete():
             return make_response(json.dumps(image_deleted[0], default=str), 200)
         else:
             return make_response(json.dumps("Sorry, an error has occurred", default=str), 500)
+    elif(valid_token == "invalid"):
+        return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
+    elif(len(valid_token) == 0):
+        return make_response(json.dumps("WRONG TOKEN", default=str), 400)
     else:
-        return make_response(json.dumps("Wrong token", default=str), 400)
+        return make_response(json.dumps(valid_token, default=str), 500)
 
 
