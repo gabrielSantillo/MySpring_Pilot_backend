@@ -63,7 +63,7 @@ def run_statement(statement, list_of_args=[]):
 # this function is resposbile to return a dictionary as response for the API's endpoints
 def make_dictionary(results, cursor):
     if(type(results != list)):
-        return
+        return results
     columns = [i[0] for i in cursor.description]
     new_results = []
     for row in results:
