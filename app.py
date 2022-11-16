@@ -1,6 +1,6 @@
 from flask import Flask
 from dbcreds import production_mode
-import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status, endpoints.courses, endpoints.visa, endpoints.image
+import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status, endpoints.courses, endpoints.visa, endpoints.image, endpoints.file_length
 from flask_cors import CORS
 
 # calling the Flask function which will return a value that I will be used for my API
@@ -146,6 +146,10 @@ def post_image():
 @app.get('/api/image')
 def get_image():
     return endpoints.image.get()
+
+@app.get('/api/image-length')
+def get_image_length():
+    return endpoints.file_length.get()
 
 @app.delete('/api/image')
 def delete_image():
