@@ -47,21 +47,25 @@ def get():
 
     valid_token = token_validation(request.headers.get('token'))
     if(valid_token == "valid"):
-        is_valid = check_endpoint_info(request.args, ['image_id'])
+        is_valid = check_endpoint_info(request.args, ['student_id'])
         if(is_valid != None):
             return make_response(json.dumps(is_valid, default=str), 400)
 
         # Get the image information from the DB
-        results = run_statement('CALL get_image(?)', [request.args.get('image_id')])
+        results = run_statement('CALL get_image(?)', [request.args.get('student_id')])
         # Make sure something came back from the DB that wasn't an error
         if(type(results) != list):
             return make_response(json.dumps(results), 500)
         elif(len(results) == 0):
             return make_response(json.dumps("Invalid image id"), 400)
 
+
+        file = send_from_directory('images', results[0]['file_name'])
+        return file
         # Use the built in flask function send_from_directory
         # First into the images folder, and then use my results from my DB interaction to get the name of the file
         return send_from_directory('images', results[0]['file_name'])
+
     elif(valid_token == "invalid"):
         return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
     elif(len(valid_token) == 0):

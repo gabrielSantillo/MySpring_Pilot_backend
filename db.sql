@@ -36,6 +36,15 @@ CREATE TABLE `application_status` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `application_status`
+--
+
+LOCK TABLES `application_status` WRITE;
+/*!40000 ALTER TABLE `application_status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `application_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `appointment`
 --
 
@@ -59,6 +68,16 @@ CREATE TABLE `appointment` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `appointment`
+--
+
+LOCK TABLES `appointment` WRITE;
+/*!40000 ALTER TABLE `appointment` DISABLE KEYS */;
+INSERT INTO `appointment` VALUES (7,7,'Natalie','Santillo','natalieg@auau.com',0,'2022-11-12 16:00:00','2022-11-10 16:31:11');
+/*!40000 ALTER TABLE `appointment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `client`
 --
 
@@ -78,6 +97,16 @@ CREATE TABLE `client` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `client`
+--
+
+LOCK TABLES `client` WRITE;
+/*!40000 ALTER TABLE `client` DISABLE KEYS */;
+INSERT INTO `client` VALUES (7,'Natalia','Fernandes do Nascimento','natalia@myspringintercambio.com','*1726FC3CBB7D2C671633E37597D4580F8142023C','2ddc40e518ffbe13d9a497238d4349b73cdfae057480ac735a8519ecc4127d69','2022-11-06 20:21:15'),(8,'Gabriel','Santillo','gabriel@myspringintercambio.com','*B1EFBFCF2EE4F373DC2D3B7E0B8AF8EAC7009F07','405e5b200dc6714800399aa603a777bf01e574d3c628a225618224f6f8692419','2022-11-14 17:32:03');
+/*!40000 ALTER TABLE `client` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `client_session`
 --
 
@@ -94,8 +123,18 @@ CREATE TABLE `client_session` (
   UNIQUE KEY `client_session_un` (`token`),
   KEY `client_session_FK` (`client_id`),
   CONSTRAINT `client_session_FK` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `client_session`
+--
+
+LOCK TABLES `client_session` WRITE;
+/*!40000 ALTER TABLE `client_session` DISABLE KEYS */;
+INSERT INTO `client_session` VALUES (49,8,'852f4322f6bc63bee3fe57d017392279e86467a3af591cb35681bc6628a83c1c','2022-11-15 13:47:16','2022-11-15 14:43:52');
+/*!40000 ALTER TABLE `client_session` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `college`
@@ -112,6 +151,16 @@ CREATE TABLE `college` (
   UNIQUE KEY `college_un` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `college`
+--
+
+LOCK TABLES `college` WRITE;
+/*!40000 ALTER TABLE `college` DISABLE KEYS */;
+INSERT INTO `college` VALUES (1,'SAIT','2022-11-04 10:54:22'),(2,'Bow Valley College','2022-11-04 10:56:08'),(3,'Seneca','2022-11-04 10:56:48'),(4,'Humber College','2022-11-04 10:57:05'),(5,'BCIT','2022-11-04 11:10:50'),(6,'Langara College','2022-11-04 16:55:29'),(7,'Lambton College','2022-11-10 16:52:44'),(8,'Douglas College','2022-11-13 21:11:10');
+/*!40000 ALTER TABLE `college` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `courses`
@@ -133,6 +182,16 @@ CREATE TABLE `courses` (
   CONSTRAINT `courses_FK_1` FOREIGN KEY (`college_id`) REFERENCES `college` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `courses`
+--
+
+LOCK TABLES `courses` WRITE;
+/*!40000 ALTER TABLE `courses` DISABLE KEYS */;
+INSERT INTO `courses` VALUES (2,1,'Business Intelligence Data Analysis and Reporting','https://www.sait.ca/programs-and-courses/certificates/business-intelligence-data-analysis-and-reporting','Winter 2023',20000,'2022-11-05 11:02:59'),(3,1,'Civil Engineering Technology','https://www.sait.ca/programs-and-courses/diplomas/civil-engineering-technology','Spring 2023',22000,'2022-11-05 11:04:22'),(4,5,'Business Analytics','https://www.bcit.ca/programs/business-analytics-graduate-certificate-full-time-a600grcert/','Spring 2023',21000,'2022-11-10 19:28:35'),(5,5,'Building Energy Modelling','https://www.bcit.ca/programs/building-energy-modelling-graduate-certificate-part-time-a200grcert/','fall 2023',17000,'2022-11-13 21:50:02');
+/*!40000 ALTER TABLE `courses` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `student`
@@ -157,8 +216,18 @@ CREATE TABLE `student` (
   CONSTRAINT `student_FK` FOREIGN KEY (`appointment_id`) REFERENCES `appointment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `student_FK_1` FOREIGN KEY (`courses_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `student_FK_2` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `student`
+--
+
+LOCK TABLES `student` WRITE;
+/*!40000 ALTER TABLE `student` DISABLE KEYS */;
+INSERT INTO `student` VALUES (7,7,'IELTS 6.0','Applyboard',0,'2022-11-14 20:32:52',8,3);
+/*!40000 ALTER TABLE `student` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `student_images`
@@ -175,8 +244,18 @@ CREATE TABLE `student_images` (
   PRIMARY KEY (`id`),
   KEY `student_images_FK` (`student_id`),
   CONSTRAINT `student_images_FK` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `student_images`
+--
+
+LOCK TABLES `student_images` WRITE;
+/*!40000 ALTER TABLE `student_images` DISABLE KEYS */;
+INSERT INTO `student_images` VALUES (3,7,'640218bb596d4f0999d8075f90acbd96.jpeg','2022-11-15 13:39:42'),(4,7,'5d12e58b8d1d4508a90a100668b49fdc.jpeg','2022-11-15 13:55:31');
+/*!40000 ALTER TABLE `student_images` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `visa`
@@ -198,6 +277,15 @@ CREATE TABLE `visa` (
   CONSTRAINT `visa_FK` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `visa`
+--
+
+LOCK TABLES `visa` WRITE;
+/*!40000 ALTER TABLE `visa` DISABLE KEYS */;
+/*!40000 ALTER TABLE `visa` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping routines for database 'myspring_pilot_mvp'
@@ -976,11 +1064,14 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_image`(image_id_input int unsigned)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_image`(student_id_input int unsigned)
 begin
-	select si.id as image_id, si.student_id as student_id, convert(si.file_name using utf8) as file_name
-	from student_images si
-	where si.id = image_id_input;
+	select si.id as file_id, si.student_id as student_id, convert(a.first_name using utf8) as first_name,
+	convert(a.first_name using utf8) as first_name, convert(si.file_name using utf8) as file_name
+	from student_images si
+	inner join student s on s.id = si.student_id
+	inner join appointment a on a.id = s.appointment_id 
+	where s.id  = student_id_input;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1090,7 +1181,7 @@ begin
 	where c.email = email_input and
 	c.password = PASSWORD(concat(password_input, (select salt from client where email = email_input)));
 
-	select cs.client_id, convert(cs.token using utf8) as token
+	select cs.client_id as client_id, convert(cs.token using utf8) as token
 	from client_session cs
 	where cs.token = token_input;
 	commit;
@@ -1177,4 +1268,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-14 18:04:14
+-- Dump completed on 2022-11-15 15:00:22
