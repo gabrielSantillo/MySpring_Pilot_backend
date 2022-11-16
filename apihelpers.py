@@ -1,8 +1,6 @@
 import os
 from uuid import uuid4
-from flask import request, make_response
 from dbhelpers import run_statement
-import json
 
 def save_file(file):
     # Check to see if first, the filename contains a . character. 
@@ -39,49 +37,7 @@ def check_data_sent(sent_data, original_data, expected_data):
             original_data[data] = sent_data[data]
     return original_data
 
-# this function is resposible to organize orders having a list that contains dictionaries with all orders made by the client
-def organize_response(response):
-    orders = []
-    ids = []
-
-    for data in response:
-        if (data['id'] in ids):
-            menu_item = {
-                'name': data['name'],
-                'price': data['price'],
-                'menu_item_id': data['menu_item_id'],
-                'description': data['description'],
-                'image_url': data['image_url']
-            }
-            item['menu_items'].append(menu_item)
-        else:
-            ids.append(data['id'])
-
-            item = {
-                'id': data['id'],
-                'restaurant_id': data['restaurant_id'],
-                'is_confirmed': data['is_confirmed'],
-                'is_complete': data['is_complete'],
-                'menu_items': [{
-                    'name': data['name'],
-                    'price': data['price'],
-                    'menu_item_id': data['menu_item_id'],
-                    'description': data['description'],
-                    'image_url': data['image_url']
-                }]
-            }
-            orders.append(item)
-    return orders
-
-
-def is_valid_token(token):
-    valid_token = run_statement('CALL token_check(?)', [token])
-
-    if(type(valid_token) == list and len(valid_token) == 0):
-        return False
-    else:
-        return True
-
+# this function has a token as argument and call a procedure that will send back in seconds how many time this token interacted with the system. If this procedure returns a value lower than 7200 seconds, means that this user is still allowed to interact with the system and will update the last interaction with the system. If it is more than that, will call a procedure that will delete this token.
 def token_validation(token):
     last_seen = run_statement('CALL token_time_validation(?)', [token])
 
