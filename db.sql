@@ -123,7 +123,7 @@ CREATE TABLE `client_session` (
   UNIQUE KEY `client_session_un` (`token`),
   KEY `client_session_FK` (`client_id`),
   CONSTRAINT `client_session_FK` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,7 @@ CREATE TABLE `client_session` (
 
 LOCK TABLES `client_session` WRITE;
 /*!40000 ALTER TABLE `client_session` DISABLE KEYS */;
-INSERT INTO `client_session` VALUES (49,8,'852f4322f6bc63bee3fe57d017392279e86467a3af591cb35681bc6628a83c1c','2022-11-15 13:47:16','2022-11-15 14:43:52');
+INSERT INTO `client_session` VALUES (52,8,'6e66ad5db026b0598cb7e732eed6c24ee6f06d8a45cde5854cc9d09104096091','2022-11-16 10:39:04','2022-11-16 10:39:40');
 /*!40000 ALTER TABLE `client_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -244,7 +244,7 @@ CREATE TABLE `student_images` (
   PRIMARY KEY (`id`),
   KEY `student_images_FK` (`student_id`),
   CONSTRAINT `student_images_FK` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -253,7 +253,7 @@ CREATE TABLE `student_images` (
 
 LOCK TABLES `student_images` WRITE;
 /*!40000 ALTER TABLE `student_images` DISABLE KEYS */;
-INSERT INTO `student_images` VALUES (3,7,'640218bb596d4f0999d8075f90acbd96.jpeg','2022-11-15 13:39:42'),(4,7,'5d12e58b8d1d4508a90a100668b49fdc.jpeg','2022-11-15 13:55:31');
+INSERT INTO `student_images` VALUES (3,7,'640218bb596d4f0999d8075f90acbd96.jpeg','2022-11-15 13:39:42'),(4,7,'5d12e58b8d1d4508a90a100668b49fdc.jpeg','2022-11-15 13:55:31'),(5,7,'1c1e99664a414e4ab214f9a85cfe79b6.jpeg','2022-11-15 15:59:21'),(6,7,'8fc01fd2f72547e3ad30c950cb594a9e.jpeg','2022-11-15 20:06:38'),(7,7,'5d03cc87e6a7447a91fd180e7c8f5682.jpeg','2022-11-15 20:08:26'),(8,7,'b10c1766acc24aca88e48bb875a53fcb.jpeg','2022-11-15 20:10:34');
 /*!40000 ALTER TABLE `student_images` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1033,6 +1033,27 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_count_of_images` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_count_of_images`(student_id_input int unsigned)
+begin
+	select convert(si.file_name using utf8) as file_name
+	from student_images si
+	where si.student_id = student_id_input;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `get_course_by_id` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1064,14 +1085,14 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_image`(student_id_input int unsigned)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_image`(file_name_input varchar(100))
 begin
 	select si.id as file_id, si.student_id as student_id, convert(a.first_name using utf8) as first_name,
 	convert(a.first_name using utf8) as first_name, convert(si.file_name using utf8) as file_name
 	from student_images si
 	inner join student s on s.id = si.student_id
 	inner join appointment a on a.id = s.appointment_id 
-	where s.id  = student_id_input;
+	where si.file_name  = file_name_input;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1268,4 +1289,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-15 15:00:22
+-- Dump completed on 2022-11-16 11:26:46
