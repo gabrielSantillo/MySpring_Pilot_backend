@@ -3,7 +3,7 @@ from dbcreds import production_mode
 import endpoints.client, endpoints.client_login, endpoints.appointments, endpoints.college, endpoints.student, endpoints.application_status, endpoints.courses, endpoints.visa, endpoints.image, endpoints.file_length
 from flask_cors import CORS
 
-# calling the Flask function which will return a value that I will be used for my API
+# calling the Flask function which will return a value that will be used in my API
 app = Flask(__name__)
 CORS(app)
 
