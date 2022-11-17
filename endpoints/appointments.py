@@ -90,12 +90,16 @@ def patch():
             if (type(appointment_info) == list and len(appointment_info) != 0):
                 update_appointment_info = check_data_sent(request.json, appointment_info[0], ['client_id', 'first_name', 'last_name', 'email', 'contract_signed', 'appointment_date'])
 
+                # calling the function that will edit an appointment
                 results = run_statement('CALL edit_appointment(?,?,?,?,?,?,?)', [update_appointment_info['client_id'], update_appointment_info['first_name'], update_appointment_info['last_name'], update_appointment_info['email'], update_appointment_info['contract_signed'], update_appointment_info['appointment_date'], request.json.get('appointment_id')])
 
+                # if the response is a list and the row_updated is equal than 1 send 200 as response
                 if(type(results) == list and results[0]['row_updated'] == 1):
                     return make_response(json.dumps(results[0], default=str), 200)
+                # if the response is a list and the row_updated is equal than 0 send 400 as response
                 elif(type(results) == list and results[0]['row_updated'] == 0):
                     return make_response(json.dumps(results[0], default=str), 400)
+                # else send 500 as an internal error
                 else:
                     return make_response(json.dumps("Sorry, an error has ocurred", default=str), 500)
 
