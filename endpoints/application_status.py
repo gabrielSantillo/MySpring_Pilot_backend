@@ -4,6 +4,8 @@ import json
 from dbhelpers import run_statement
 
 # this is the POST function that is responsible to post new application status
+
+
 def post():
     # verifying if some value was sent as header
     is_valid_header = check_endpoint_info(request.headers, ['token'])
