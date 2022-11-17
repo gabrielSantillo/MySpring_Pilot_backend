@@ -4,8 +4,6 @@ import json
 from dbhelpers import run_statement
 
 # this is the POST function that is responsible to post new application status
-
-
 def post():
     # verifying if some value was sent as header
     is_valid_header = check_endpoint_info(request.headers, ['token'])
@@ -43,9 +41,8 @@ def post():
     else:
         return make_response(json.dumps(valid_token, default=str), 500)
 
+
 # this is the GET function that is responsible to get all application status
-
-
 def get():
     # verifying if some value was sent as header
     is_valid_header = check_endpoint_info(request.headers, ['token'])
@@ -74,10 +71,10 @@ def get():
     else:
         return make_response(json.dumps(valid_token, default=str), 500)
 
+
 # this is the PATCH function that is responsible to update an application status based on its id
-
-
 def patch():
+    # verifying if some value was sent as header
     is_valid_header = check_endpoint_info(request.headers, ['token'])
     if (is_valid_header != None):
         return make_response(json.dumps(is_valid_header, default=str), 400)
