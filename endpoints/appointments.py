@@ -106,12 +106,12 @@ def patch():
             # if the length of appointment_info is not different than zero, send a 400 as response
             else:
                 return make_response(json.dumps("Wrong appointment_id", default=str), 400)
-    # if the response send back while checking the token is "invalid" send a 403 as response
+    # if the response from the validation function is "invalid" means that the token expired
     elif(valid_token == "invalid"):
         return make_response(json.dumps("TOKEN EXPIRED", default=str), 403)
-    # if the response send back while checking the token is "invalid" send a 403 as response
+    # if the response from the validation function is 0 means that the token is invalid
     elif(len(valid_token) == 0):
         return make_response(json.dumps("WRONG TOKEN", default=str), 400)
     else:
         return make_response(json.dumps(valid_token, default=str), 500)
-
+          

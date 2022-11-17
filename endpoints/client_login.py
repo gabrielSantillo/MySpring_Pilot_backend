@@ -16,7 +16,7 @@ def post():
     # calling the function that will log in the client
     results = run_statement('CALL log_in_client(?,?,?)', [request.json.get('email'), request.json.get('password'), token])
 
-    # if the response is a list and the length is different than zero 
+    # if the response is a list and the length is different than zero send 200 as response
     if(type(results) == list and len(results) != 0):
         return make_response(json.dumps(results[0], default=str), 200)
     # if the response is a list and the length is equal than zero 
@@ -25,7 +25,7 @@ def post():
     else:
         return make_response(json.dumps("Sorry, an error has occurred"), 500)
 
-# this is the POST function that is responsible to delete a client_login
+# this is the DELETE function that is responsible to delete a client_login
 def delete():
     # verifying if some value was sent as header
     is_valid_header = check_endpoint_info(request.headers, ['token'])
